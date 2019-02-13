@@ -1,0 +1,46 @@
+---
+# tasks file for docker
+- name: Get uname -r
+  shell: uname -r
+  register: uname
+
+- name: Install packages for ubuntu trusty and docker ce
+  apt:
+    state: present
+    name: "{{ item }}"
+  with_items:
+    - "linux-image-extra-{{ uname.stdout }}"
+    - linux-image-extra-virtual
+  when: trusty is defined and trusty
+
+- name: Install packages for docker
+  apt:
+    state: present
+    update_cache: no
+    name: "{{ item }}"
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+
+- name: Install docker apt key
+  # apt_key: validate_certs=False id=0EBFCD88 url=https://download.docker.com/linux/ubuntu/gpg state=present
+  shell:
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+- name: Install docker repository
+  shell:
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+- name: Install docker-ce
+  apt:
+    state: present
+    update_cache: yes
+    name: {{ item }}
+    with_items:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+    #=18.06.1~ce~3-0~ubuntu
