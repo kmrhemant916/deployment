@@ -371,6 +371,10 @@ Resources:
           - AWSInstanceType2Arch
           - !Ref InstanceType
           - Arch
+      Tags:
+        -
+          Key: Name
+          Value: sentry_server
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
