@@ -334,7 +334,7 @@ Mappings:
       HVM64: ami-09b42976632b27e9b
       HVMG2: ami-0a9ce9fecc3d1daf8
     ap-south-1:
-      HVM64: ami-0912f71e06545ad88
+      HVM64: ami-0d773a3b7bb2bb1c1
       HVMG2: ami-097b15e89dbdcfcf4
     us-east-2:
       HVM64: ami-0b59bfac6be064b78
