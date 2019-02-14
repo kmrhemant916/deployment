@@ -1,0 +1,11 @@
+# file: nginx/handlers/main.yml
+
+- name: restart nginx
+  service: name=nginx state=restarted
+  become: yes
+  when: not nginx_first_start.changed or nginx_dont_start
+
+- name: reload nginx
+  service: name=nginx state=reloaded
+  become: yes
+  when: not nginx_first_start.changed or nginx_dont_start
