@@ -37,7 +37,7 @@
   apt:
     state: present
     update_cache: yes
-    name: {{ item }}
+    name: "{{ item }}"
     with_items:
       - docker-ce
       - docker-ce-cli
