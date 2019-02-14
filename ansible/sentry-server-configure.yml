@@ -1,11 +1,14 @@
+# ansible-playbook -i hosts sentry-server-configure.yml -u ec2-user -s
 ---
 - name: Configure sentry server
   hosts: localhost
   connection: local
   gather_facts: False
+  become: yes
 
   vars:
     - aws_region: "ap-south-1"
+
   tasks:
     - name:  launch sentry cloudformation stack
       cloudformation:
