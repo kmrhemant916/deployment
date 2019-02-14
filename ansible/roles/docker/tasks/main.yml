@@ -38,9 +38,9 @@
     state: present
     update_cache: yes
     name: "{{ item }}"
-    with_items:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
+  with_items:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
 
     #=18.06.1~ce~3-0~ubuntu
