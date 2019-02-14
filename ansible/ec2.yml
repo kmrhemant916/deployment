@@ -374,7 +374,7 @@ Resources:
       Tags:
         -
           Key: Name
-          Value: sentry_server
+          Value: sentry
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
