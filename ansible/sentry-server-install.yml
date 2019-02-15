@@ -5,15 +5,13 @@
   remote_user: ubuntu
   gather_facts: true
 
-
   pre_tasks:
     - name: 'install python2'
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
-  # roles:
-  #   - { role: base, tags: [ base ] }
-  #   - { role: docker, tags: [ docker ] }
-
   roles:
     - common
     - python
+    - { role: docker, tags: [ docker ] }
+    - { role: nginx, tags: [ nginx ] }
+    - { role: sentry, tags: [ sentry ] }
