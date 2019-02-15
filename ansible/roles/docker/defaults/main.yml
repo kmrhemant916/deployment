@@ -1,3 +1,4 @@
 ---
 # defaults file for docker
 trusty: false
+docker_python_version: 1.10.6
