@@ -1,0 +1,26 @@
+- name: install python-related packages debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-dev
+    - python-setuptools
+  when: ansible_os_family == "Debian"
+
+- name: install python-related packages redhat/centos
+  yum: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-devel
+    - python-setuptools
+  when: ansible_os_family == "RedHat"
+
+- name: "Install pip"
+  shell: |
+    cd /tmp;
+    rm get-pip.py;
+    wget https://bootstrap.pypa.io/get-pip.py;
+    python get-pip.py
+  become: yes
+
+- name: install virtualenv
+  pip: name=virtualenv
