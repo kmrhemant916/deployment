@@ -1,0 +1,114 @@
+---
+
+- name: Ensure sentry directories exists
+  file: state=directory path={{item}} recurse=true
+  with_items:
+  - "{{sentry_home}}/data"
+  - "{{sentry_home}}/docker"
+  - "{{sentry_filestore_location}}"
+
+- name: Configure Sentry
+  template: src={{item}} dest={{sentry_home}}/docker/{{item}} mode=0755
+  with_items:
+  - sentry.conf.py
+  - config.yml
+  - Dockerfile
+  - requirements.txt
+  register: sentry_config
+  notify: sentry restart
+
+- name: Rebuild Sentry
+  docker_image:
+    path: "{{sentry_home}}/docker"
+    name: sentry
+    force: true
+    tag: "{{ sentry_version }}-onbuild"
+    pull: true
+  when: sentry_config.changed
+
+- name: Create a network
+  docker_network:
+    name: sentry
+
+- name: Run postgresql
+  docker_container:
+    name: postgres
+    image: postgres:9.5
+    restart_policy: always
+    volumes:
+    - "{{sentry_home}}/data:/var/lib/postgresql/data"
+    networks:
+    - name: sentry
+    env:
+      POSTGRES_PASSWORD: "{{ sentry_db_password }}"
+      POSTGRES_USER: "{{ sentry_db_user }}"
+      POSTGRES_DB: "{{ sentry_db_name }}"
+  when: sentry_postgres
+
+- name: Run redis
+  docker_container:
+    name: redis
+    image: redis:3.2-alpine
+    restart_policy: always
+    networks:
+    - name: sentry
+  when: sentry_redis
+
+- name: Run memcached
+  docker_container:
+    name: memcached
+    image: memcached:1.4
+    restart_policy: always
+    networks:
+    - name: sentry
+  when: sentry_memcached
+
+- name: Upgrade Sentry
+  docker_container:
+    command: upgrade --noinput
+    detach: false
+    image: "sentry:{{ sentry_version }}-onbuild"
+    name: sentry
+    networks:
+    - name: sentry
+  when: sentry_config.changed
+
+- name: Start Sentry-Web
+  docker_container:
+    command: run web
+    image: "sentry:{{ sentry_version }}-onbuild"
+    name: sentry
+    restart_policy: always
+    networks:
+    - name: sentry
+    links: "{{sentry_links|default(omit)}}"
+    ports:
+    - "{{sentry_web_host}}:{{sentry_web_port}}:9000"
+
+- name: Start Sentry-Worker
+  docker_container:
+    command: run worker
+    image: "sentry:{{ sentry_version }}-onbuild"
+    name: sentry-worker
+    restart_policy: always
+    networks:
+    - name: sentry
+
+- name: Start Sentry-Cron
+  docker_container:
+    command: run cron
+    image: "sentry:{{ sentry_version }}-onbuild"
+    name: sentry-cron
+    restart_policy: always
+    networks:
+    - name: sentry
+
+- name: Setup superusers
+  command: "docker exec sentry sentry createuser --email={{item.email}} --password={{item.password}} --no-input --superuser"
+  ignore_errors: true
+  with_items: "{{sentry_admins}}"
+
+- name: Configure Nginx
+  template: src=nginx.conf dest={{nginx_dir|default('/etc/nginx')}}/sites-enabled/sentry.conf
+  notify: [nginx reload]
+  when: sentry_nginx

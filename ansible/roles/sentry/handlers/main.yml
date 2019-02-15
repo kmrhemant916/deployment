@@ -1,0 +1,10 @@
+---
+
+- name: sentry restart
+  docker_container:
+    name: sentry
+    state: started
+    restart: true
+
+- name: nginx reload
+  service: name=nginx state=reloaded
