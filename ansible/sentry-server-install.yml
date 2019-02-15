@@ -3,12 +3,17 @@
   hosts: "{{ hosts }}"
   become: yes
   remote_user: ubuntu
-  gather_facts: no
+  gather_facts: true
+
 
   pre_tasks:
     - name: 'install python2'
-      raw: sudo apt-get -y install python2.7
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+  # roles:
+  #   - { role: base, tags: [ base ] }
+  #   - { role: docker, tags: [ docker ] }
 
   roles:
-    - { role: base, tags: [ base ] }
-    - { role: docker, tags: [ docker ] }
+    - common
+    - python
