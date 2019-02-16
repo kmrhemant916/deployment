@@ -1,2 +1,2 @@
 # sentry
-Ansible script to install Sentry
+Ansible script to configure and install Sentry
