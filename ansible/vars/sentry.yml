@@ -1,0 +1,6 @@
+---
+aws_region: "ap-south-1"
+cloudformation_stack_name: "sentry"
+cloudformation_template: "cloudformation/ec2.yml"
+ssh_key_pair_name: "admin"
+ec2_instance_type: "t2.medium"
