@@ -1,23 +1,24 @@
-# ansible-playbook -i hosts sentry-server-configure.yml -u ubuntu -s
+# ansible-playbook -i hosts sentry-server-configure.yml
 ---
 - name: Configure sentry server
   hosts: localhost
   connection: local
   gather_facts: False
 
-  vars:
-    - aws_region: "ap-south-1"
+  vars_files:
+    - vars/sentry.yml
 
   tasks:
     - name:  launch sentry cloudformation stack
       cloudformation:
-        stack_name: "sentry"
-        region: "{{ aws_region }}"
+        stack_name: "{{ cloudformation_stack_name }}"
         state: "present"
-        template: "ec2.yml"
+        region: "{{ aws_region }}"
+        disable_rollback: true
+        template: "{{ cloudformation_template }}"
         template_parameters:
-          KeyName: "admin"
-          InstanceType: "t2.medium"
+          KeyName: "{{ ssh_key_pair_name }}"
+          InstanceType: "{{ ec2_instance_type }}"
       register: stack
 
     - debug: msg="{{ stack }}"
@@ -56,3 +57,6 @@
   roles:
     - common
     - python
+    - { role: docker, tags: [ docker ] }
+    - { role: nginx, tags: [ nginx ] }
+    - { role: sentry, tags: [ sentry ] }
