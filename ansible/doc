@@ -1,6 +1,0 @@
-#AWS CLI to delete cloudformation stack:
-aws cloudformation delete-stack --stack-name sentry
-
-
-#AWS CLI to create cloudformation stack:
-aws cloudformation create-stack --template-body file://cloudformation/ec2.yml --stack-name sentry-test --parameters ParameterKey=KeyName,ParameterValue=admin ParameterKey=InstanceType,ParameterValue=t2.micro

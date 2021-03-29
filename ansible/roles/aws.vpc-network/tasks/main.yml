@@ -1,0 +1,16 @@
+---
+# tasks file for aws.vpc-network
+
+- name: Create VPC
+  ec2_vpc_net:
+    name: "{{ outer_item.vpc_name }}"
+    cidr_block: "{{ outer_item.cidr_block }}"
+    region: "{{ outer_item.dev_aws_region }}"
+    state: "present"
+  register: vpc
+  tags:
+    - vpc
+
+# - name: Set VPC ID in variable
+#   set_fact: 
+#     vpc_id: "{{ vpc.vpc.id }}"
