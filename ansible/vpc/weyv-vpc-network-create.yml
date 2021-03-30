@@ -1,0 +1,144 @@
+---
+  # run for tag "first" only then when nat gateway has been manually created
+  # and attached to subnet, run without tags
+- name: Configure VPC, VPC peering, subnets, route tables
+  hosts: local
+  connection: local
+
+  vars:
+    - region: us-east-1
+    - ops_vpc_id: vpc-62cd4404 # 192.168.0.0/16
+    - prod_vpc_id: vpc-ec89e089 # 10.0.0.0/16
+    - dev_vpc_id: vpc-8b883fed # 172.16.0.0/16
+    - internet_gateway_id_prod : igw-71b10e14
+    - internet_gateway_id_dev: igw-f2bdcd95
+    - internet_gateway_id_ops: igw-c0a4eaa7
+    - nat_gateway_id_dev: nat-0691152c71aefca16
+    - nat_gateway_id_ops: nat-0c9dc4a03e5ee2f93
+    - nat_gateway_id: nat-06405cb48fe1bba4e
+    - source_vpc_id: "{{ ops_vpc_id }}"
+    - peerings:
+        - { peer_vpc_id: "{{ dev_vpc_id }}", name_suffix: "ops_to_dev" }
+        - { peer_vpc_id: "{{ prod_vpc_id }}", name_suffix: "ops_to_pro" }
+    - dev_public_subnets:
+        - { name: "weyv-us-east-1a-dev-public", cidr: "172.16.32.0/19", az: "us-east-1a" }
+        - { name: "weyv-us-east-1b-dev-public", cidr: "172.16.96.0/19", az: "us-east-1b" }
+        - { name: "weyv-us-east-1c-dev-public", cidr: "172.16.160.0/19", az: "us-east-1c" }
+    - dev_private_subnets:
+        - { name: "weyv-us-east-1a-dev-private", cidr: "172.16.0.0/19", az: "us-east-1a" }
+        - { name: "weyv-us-east-1b-dev-private", cidr: "172.16.64.0/19", az: "us-east-1b" }
+        - { name: "weyv-us-east-1c-dev-private", cidr: "172.16.128.0/19", az: "us-east-1c" }
+    - ops_public_subnets:
+        - { name: "weyv-us-east-1a-ops-public", cidr: "192.168.32.0/19", az: "us-east-1a" }
+        - { name: "weyv-us-east-1b-ops-public", cidr: "192.168.96.0/19", az: "us-east-1b" }
+        - { name: "weyv-us-east-1c-ops-public", cidr: "192.168.160.0/19", az: "us-east-1c" }
+    - ops_private_subnets:
+        - { name: "weyv-us-east-1a-ops-private", cidr: "192.168.0.0/19", az: "us-east-1a" }
+        - { name: "weyv-us-east-1b-ops-private", cidr: "192.168.64.0/19", az: "us-east-1b" }
+        - { name: "weyv-us-east-1c-ops-private", cidr: "192.168.128.0/19", az: "us-east-1c" }
+
+  tasks:
+    # VPCs exist so we don't recreate them
+    # - name: Create VPC peerings
+    #   include: vpc-peer-create.yml
+    #   with_items: "{{ peerings }}"
+    #   tags:
+    #     - route
+    - name: Create dev peering
+      ec2_vpc_peer:
+        region: "{{ region }}"
+        vpc_id: "{{ source_vpc_id }}"
+        peer_vpc_id: "{{ dev_vpc_id }}"
+        state: present
+        tags:
+          Name: "weyv-peering-ops_to_dev"
+          Project: "weyv"
+      register: vpc_peer_ops_to_dev
+      tags:
+        - first
+
+    - name: Accept local VPC peering request
+      ec2_vpc_peer:
+        region: "{{ region }}"
+        peering_id: "{{ vpc_peer_ops_to_dev.peering_id }}"
+        state: accept
+        tags:
+          Name: "weyv-peering-ops_to_dev"
+      register: action_peer_dev
+      tags:
+        - first
+
+    - name: Create prod peering
+      ec2_vpc_peer:
+        region: "{{ region }}"
+        vpc_id: "{{ source_vpc_id }}"
+        peer_vpc_id: "{{ prod_vpc_id }}"
+        state: present
+        tags:
+          Name: "weyv-peering-ops_to_prod"
+          Project: "weyv"
+      register: vpc_peer_ops_to_prod
+      tags:
+        - first
+
+    - name: Accept local VPC peering request
+      ec2_vpc_peer:
+        region: "{{ region }}"
+        peering_id: "{{ vpc_peer_ops_to_prod.peering_id }}"
+        state: accept
+        tags:
+          Name: "weyv-peering-ops_to_prod"
+      register: action_peer_prod
+      tags:
+        - first
+
+    # Subnets for prod already exist
+    - name: Create subnets for each vpc
+      include: vpc-subnets-create.yml
+      with_items:
+        - { vpc_id: "{{ dev_vpc_id }}", subnets: "{{ dev_public_subnets }}" }
+        - { vpc_id: "{{ dev_vpc_id }}", subnets: "{{ dev_private_subnets }}" }
+        - { vpc_id: "{{ ops_vpc_id }}", subnets: "{{ ops_public_subnets }}" }
+        - { vpc_id: "{{ ops_vpc_id }}", subnets: "{{ ops_private_subnets }}" }
+      loop_control:
+        loop_var: outer_item
+      tags:
+        - first
+
+    - set_fact:
+        public_subnet_name: "weyv-us-east-1a-dev-public"
+        subnet_vpc_id: "{{ dev_vpc_id }}"
+      tags:
+        - route
+
+    - debug: msg="{{ vpc_peer_ops_to_dev }}"
+      tags:
+        - route
+
+    - name: Create route tables for subnets
+      include: vpc-routes-tables-create.yml
+      with_items:
+        - { name: "weyv-us-east-dev-public", vpc_id: "{{ dev_vpc_id }}",
+            routes: [ { dest: "0.0.0.0/0", gateway_id: "{{ internet_gateway_id_dev }}" }],
+            subnets: "{{ dev_public_subnets | map(attribute='name') | list }}"
+          }
+        - { name: "weyv-us-east-dev-private", vpc_id: "{{ dev_vpc_id }}",
+            routes: [ { dest: "0.0.0.0/0", gateway_id: "{{ nat_gateway_id_dev }}" }],
+            subnets: "{{ dev_private_subnets | map(attribute='name') | list }}"
+          }
+        - { name: "weyv-us-east-ops-public", vpc_id: "{{ ops_vpc_id }}",
+            routes: [ { dest: "0.0.0.0/0", gateway_id: "{{ internet_gateway_id_ops }}" },
+                      { dest: "10.0.0.0/16", vpc_peering_connection_id: "{{ vpc_peer_ops_to_prod.peering_id }}"},
+                      { dest: "172.16.0.0/16", vpc_peering_connection_id: "{{ vpc_peer_ops_to_dev.peering_id }}"}
+                    ],
+            subnets: "{{ ops_public_subnets | map(attribute='name') | list }}"
+          }
+        - { name: "weyv-us-east-ops-private", vpc_id: "{{ ops_vpc_id }}",
+            routes: [ { dest: "0.0.0.0/0", gateway_id: "{{ nat_gateway_id_ops }}" },
+                      { dest: "10.0.0.0/16", vpc_peering_connection_id: "{{ vpc_peer_ops_to_prod.peering_id }}"},
+                      { dest: "172.16.0.0/16", vpc_peering_connection_id: "{{ vpc_peer_ops_to_dev.peering_id }}"}
+                    ],
+            subnets: "{{ ops_private_subnets | map(attribute='name') | list }}"
+          }
+      tags:
+        - route

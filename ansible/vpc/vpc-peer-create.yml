@@ -1,0 +1,19 @@
+- name: Create peering
+  ec2_vpc_peer:
+    region: "{{ region }}"
+    vpc_id: "{{ source_vpc_id }}"
+    peer_vpc_id: "{{ item.peer_vpc_id }}"
+    state: present
+    tags:
+      Name: "weyv-peering-{{ item.name_suffix }}"
+      Project: "weyv"
+  register: vpc_peer
+
+- name: Accept local VPC peering request
+  ec2_vpc_peer:
+    region: "{{ region }}"
+    peering_id: "{{ vpc_peer.peering_id }}"
+    state: accept
+    tags:
+      Name: "weyv-peering-{{ item.name_suffix }}"
+  register: action_peer

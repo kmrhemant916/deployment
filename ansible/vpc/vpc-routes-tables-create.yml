@@ -1,0 +1,9 @@
+- name: Create route table
+  ec2_vpc_route_table:
+    vpc_id: "{{ item.vpc_id }}"
+    region: "{{ region }}"
+    tags:
+      Name: "{{ item.name }}"
+    subnets: "{{ item.subnets }}"
+    routes: "{{ item.routes }}"
+  register: route_table

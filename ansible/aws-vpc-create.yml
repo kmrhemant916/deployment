@@ -1,0 +1,17 @@
+# ansible-playbook -i hosts aws-vpc-create.yml
+---
+- name: Create vpc in aws
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - vars/dev/vpc.yml
+
+- name: Create VPC
+  include_role:
+    name: aws.vpc-create
+  vars:
+    outer_item: "{{ item }}"
+  with_items:
+    - { vpc_name: "{{ dev_vpc_name }}", cidr_block: "{{ dev_cidr_block }}", region: "{{ dev_aws_region }}" }

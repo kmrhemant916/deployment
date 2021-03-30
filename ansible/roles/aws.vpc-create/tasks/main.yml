@@ -1,5 +1,5 @@
 ---
-# tasks file for aws.vpc-network
+# tasks file for aws.vpc-create
 
 - name: Create VPC
   ec2_vpc_net:

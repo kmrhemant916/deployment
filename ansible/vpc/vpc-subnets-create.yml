@@ -1,0 +1,13 @@
+# - set_fact:
+#     outer_item: "{{ item }}"
+
+- name: Create subnet
+  ec2_vpc_subnet:
+    state: present
+    region: "{{ region }}"
+    vpc_id: "{{ outer_item.vpc_id }}"
+    cidr: "{{ item.cidr }}"
+    az: "{{ item.az }}"
+    resource_tags:
+      Name: "{{ item.name }}"
+  with_items: "{{ outer_item.subnets }}"
