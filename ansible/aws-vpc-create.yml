@@ -8,6 +8,7 @@
 
   vars_files:
     - vars/dev/vpc.yml
+    - vars/ops/vpc.yml
 
   tasks:
     - name: create vpc
@@ -15,6 +16,7 @@
         name: aws.vpc-create
       with_items:
         - { vpc_name: "{{ dev_vpc_name }}", cidr_block: "{{ dev_cidr_block }}", region: "{{ dev_aws_region }}" }
+        - { vpc_name: "{{ ops_vpc_name }}", cidr_block: "{{ ops_cidr_block }}", region: "{{ ops_aws_region }}" }
       loop_control:
         loop_var: outer_item
       tags:

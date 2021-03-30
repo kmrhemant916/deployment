@@ -1,0 +1,4 @@
+---
+ops_vpc_name: ops_vpc
+ops_cidr_block: 192.168.0.0/16
+ops_aws_region: ap-south-1

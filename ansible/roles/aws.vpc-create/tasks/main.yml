@@ -20,3 +20,11 @@
 - debug: msg="{{ vpc_id }}"
   tags:
     - vpc
+
+- name: Create Internet Gateway for VPC
+  ec2_vpc_igw:
+    vpc_id: "{{ vpc_id }}"
+    state: "present"
+  register: vpc_igw
+  tags:
+    - vpc
