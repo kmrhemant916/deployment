@@ -1,4 +1,5 @@
 # ansible-playbook -i hosts aws-vpc-create.yml
+# ansible-playbook -i hosts aws-vpc-create.yml --tags "vpc"
 ---
 - name: Create vpc in aws
   hosts: localhost
@@ -8,10 +9,13 @@
   vars_files:
     - vars/dev/vpc.yml
 
-- name: Create VPC
-  include_role:
-    name: aws.vpc-create
-  vars:
-    outer_item: "{{ item }}"
-  with_items:
-    - { vpc_name: "{{ dev_vpc_name }}", cidr_block: "{{ dev_cidr_block }}", region: "{{ dev_aws_region }}" }
+  tasks:
+    - name: create vpc
+      include_role:
+        name: aws.vpc-create
+      with_items:
+        - { vpc_name: "{{ dev_vpc_name }}", cidr_block: "{{ dev_cidr_block }}", region: "{{ dev_aws_region }}" }
+      loop_control:
+        loop_var: outer_item
+      tags:
+        - vpc

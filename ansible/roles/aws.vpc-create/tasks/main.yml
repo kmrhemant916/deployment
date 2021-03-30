@@ -5,12 +5,18 @@
   ec2_vpc_net:
     name: "{{ outer_item.vpc_name }}"
     cidr_block: "{{ outer_item.cidr_block }}"
-    region: "{{ outer_item.dev_aws_region }}"
+    region: "{{ outer_item.region }}"
     state: "present"
   register: vpc
   tags:
     - vpc
 
-# - name: Set VPC ID in variable
-#   set_fact: 
-#     vpc_id: "{{ vpc.vpc.id }}"
+- name: Set VPC ID in variable
+  set_fact: 
+    vpc_id: "{{ vpc.vpc.id }}"
+  tags:
+    - vpc
+
+- debug: msg="{{ vpc_id }}"
+  tags:
+    - vpc
