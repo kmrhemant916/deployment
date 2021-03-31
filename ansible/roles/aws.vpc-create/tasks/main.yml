@@ -1,7 +1,7 @@
 ---
 # tasks file for aws.vpc-create
 
-- name: Create VPC
+- name: create VPC
   ec2_vpc_net:
     name: "{{ outer_item.vpc_name }}"
     cidr_block: "{{ outer_item.cidr_block }}"
@@ -11,7 +11,7 @@
   tags:
     - vpc
 
-- name: Set VPC ID in variable
+- name: set VPC ID in variable
   set_fact: 
     vpc_id: "{{ vpc.vpc.id }}"
   tags:
@@ -21,9 +21,10 @@
   tags:
     - vpc
 
-- name: Create Internet Gateway for VPC
+- name: create igw for VPC - {{ vpc_id }}
   ec2_vpc_igw:
     vpc_id: "{{ vpc_id }}"
+    region: "{{ outer_item.region }}"
     state: "present"
   register: vpc_igw
   tags:
