@@ -1,5 +1,7 @@
-# ansible-playbook -i hosts aws-vpc-create.yml
 # ansible-playbook -i hosts aws-vpc-create.yml --tags "vpc"
+# ansible-playbook -i hosts aws-vpc-create.yml --tags "igw"
+# put vpc_id and igw_id in vars
+# ansible-playbook -i hosts aws-vpc-create.yml --tags "subnet"
 ---
 - name: Create vpc in aws
   hosts: localhost
@@ -21,3 +23,6 @@
         loop_var: outer_item
       tags:
         - vpc
+        - igw
+        - subnet
+        - route_table
