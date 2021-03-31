@@ -28,4 +28,19 @@
     state: "present"
   register: vpc_igw
   tags:
-    - vpc
+    - igw
+
+- name: create public subnet into VPC - {{ vpc_id }}
+  ec2_vpc_subnet:
+    state: present
+    vpc_id: "{{ vpc_id }}"
+    region: "{{ outer_item.region }}"
+    cidr: "{{ item.cidr }}"
+    map_public: yes
+    az: "{{ item.az }}"
+    resource_tags:
+      name: "{{ item.name }}"
+  with_items: "{{ outer_item.subnets }}"
+  register: subnet
+  tags:
+    - subnet

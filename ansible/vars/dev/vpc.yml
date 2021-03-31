@@ -3,3 +3,6 @@ dev:
   vpc_name: dev_vpc
   cidr_block: 172.31.0.0/16
   aws_region: ap-south-1
+  public_subnets:
+    - { name: "aws-ap-south-1a-dev-public", cidr: "172.31.1.0/24", az: "ap-south-1a" }
+    - { name: "aws-ap-south-1b-dev-public", cidr: "172.31.2.0/24", az: "ap-south-1b" }
