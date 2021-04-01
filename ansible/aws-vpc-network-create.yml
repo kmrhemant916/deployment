@@ -1,8 +1,8 @@
-# ansible-playbook -i hosts aws-vpc-create.yml --tags "vpc"
-# ansible-playbook -i hosts aws-vpc-create.yml --tags "igw"
+# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "vpc"
+# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "igw"
 # put igw_id in vars/{{ env }}/vpc.yml
-# ansible-playbook -i hosts aws-vpc-create.yml --tags "public_subnet"
-# ansible-playbook -i hosts aws-vpc-create.yml --tags "route_table"
+# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "public_subnet"
+# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "route_table"
 ---
 - name: Create vpc in aws
   hosts: localhost
@@ -14,12 +14,12 @@
     - vars/ops/vpc.yml
 
   tasks:
-    - name: create vpc
+    - name: create vpc network
       include_role:
-        name: aws.vpc-create
+        name: aws.vpc-network-create
       with_items:
         - { vpc_name: "{{ dev.vpc_name }}", cidr_block: "{{ dev.cidr_block }}", region: "{{ dev.aws_region }}", subnets: "{{ dev.public_subnets }}", igw_name: "{{ dev.igw_name }}" }
-        # - { vpc_name: "{{ ops_vpc_name }}", cidr_block: "{{ ops_cidr_block }}", region: "{{ ops_aws_region }}" }
+        - { vpc_name: "{{ ops.vpc_name }}", cidr_block: "{{ ops.cidr_block }}", region: "{{ ops.aws_region }}", subnets: "{{ ops.public_subnets }}", igw_name: "{{ ops.igw_name }}" }
       loop_control:
         loop_var: outer_item
       tags:

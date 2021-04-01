@@ -1,7 +1,11 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+* Create a VPC network on AWS
+  * VPC
+  * IGW
+  * Subnets - Public + Private
+  * Route table for each subnet
 
 Requirements
 ------------
