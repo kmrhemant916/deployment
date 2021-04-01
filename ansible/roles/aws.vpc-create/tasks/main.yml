@@ -43,7 +43,7 @@
   tags:
     - igw
 
-- name: create public subnet into VPC - {{ item.vpc_id }}
+- name: create public subnet into VPC - {{ vpc_id }}
   ec2_vpc_subnet:
     state: present
     vpc_id: "{{ item.vpc_id }}"
@@ -56,7 +56,7 @@
   with_items: "{{ outer_item.subnets }}"
   register: subnet
   tags:
-    - subnet
+    - public_subnet
 
 # - name: Create route table
 #   ec2_vpc_route_table:
