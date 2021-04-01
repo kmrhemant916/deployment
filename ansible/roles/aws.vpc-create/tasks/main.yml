@@ -30,11 +30,13 @@
     - public_subnet
     - route_table
 
-- name: create igw for VPC - {{ vpc_id }}
+- name: create igw for VPC - "{{ vpc_id }}"
   ec2_vpc_igw:
     vpc_id: "{{ vpc_id }}"
     region: "{{ outer_item.region }}"
     state: "present"
+    resource_tags:
+      Name: "{{ outer_item.igw_name }}"
   register: igw
   tags:
     - igw
@@ -69,11 +71,9 @@
     vpc_id: "{{ vpc_id }}"
     region: "{{ outer_item.region }}"
     subnets: "{{ item.name }}"
-    # subnets:
-    #   - "{{ subnet.subnet.id }}"
     routes: "{{ item.routes }}"
-    tags:
-      name: "{{ item.name }}"
+    resource_tags:
+      Name: "{{ item.name }}"
   with_items: "{{ outer_item.subnets }}"
   register: route_table
   tags:
