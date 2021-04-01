@@ -1,5 +1,4 @@
 ---
-vpc_id: vpc-04c6f8178d772fd12
 igw_id: igw-065e3fcb0082d457d
 public_subnets_routes: [{ dest: "0.0.0.0/0", gateway_id: "{{ igw_id }}" }]
 dev:
@@ -7,5 +6,5 @@ dev:
   cidr_block: 172.31.0.0/16
   aws_region: ap-south-1
   public_subnets:
-    - { name: "aws-ap-south-1a-dev-public", cidr: "172.31.1.0/24", az: "ap-south-1a", vpc_id: "{{ vpc_id }}", routes: "{{ public_subnets_routes }}" }
-    - { name: "aws-ap-south-1b-dev-public", cidr: "172.31.2.0/24", az: "ap-south-1b", vpc_id: "{{ vpc_id }}", routes: "{{ public_subnets_routes }}" }
+    - { name: "aws-ap-south-1a-dev-public", cidr: "172.31.1.0/24", az: "ap-south-1a", routes: "{{ public_subnets_routes }}" }
+    - { name: "aws-ap-south-1b-dev-public", cidr: "172.31.2.0/24", az: "ap-south-1b", routes: "{{ public_subnets_routes }}" }
