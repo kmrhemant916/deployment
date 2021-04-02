@@ -1,11 +1,13 @@
 ---
 dev_igw_id: igw-0ba4e4a962b2919a1
 dev_public_subnets_routes: [{ dest: "0.0.0.0/0", gateway_id: "{{ dev_igw_id }}" }]
+dev_private_subnets_routes: [{ dest: "0.0.0.0/0", gateway_id: "{{ dev_igw_id }}" }]
 dev:
   vpc_name: dev_vpc
   igw_name: dev_vpc_igw
   cidr_block: 172.31.0.0/16
   aws_region: ap-south-1
-  public_subnets:
-    - { name: "aws-ap-south-1a-dev-public", cidr: "172.31.1.0/24", az: "ap-south-1a", routes: "{{ dev_public_subnets_routes }}" }
+  subnets:
+    - { name: "aws-ap-south-1a-dev-public", public: yes, cidr: "172.31.1.0/24", az: "ap-south-1a", routes: "{{ dev_public_subnets_routes }}" }
     # - { name: "aws-ap-south-1b-dev-public", cidr: "172.31.2.0/24", az: "ap-south-1b", routes: "{{ dev_public_subnets_routes }}" }
+    - { name: "aws-ap-south-1a-dev-private", public: no, cidr: "172.31.2.0/24", az: "ap-south-1b", routes: "{{ dev_private_subnets_routes }}" }

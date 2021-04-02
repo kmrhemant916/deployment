@@ -6,6 +6,6 @@ ops:
   igw_name: ops_vpc_igw
   cidr_block: 192.168.0.0/16
   aws_region: ap-south-1
-  public_subnets:
-    - { name: "aws-ap-south-1a-ops-public", cidr: "192.168.1.0/24", az: "ap-south-1a", routes: "{{ ops_public_subnets_routes }}" }
-    - { name: "aws-ap-south-1b-ops-public", cidr: "192.168.2.0/24", az: "ap-south-1b", routes: "{{ ops_public_subnets_routes }}" }
+  subnets:
+    - { name: "aws-ap-south-1a-ops-public", public: yes, cidr: "192.168.1.0/24", az: "ap-south-1a", routes: "{{ ops_public_subnets_routes }}" }
+    - { name: "aws-ap-south-1b-ops-public", public: yes, cidr: "192.168.2.0/24", az: "ap-south-1b", routes: "{{ ops_public_subnets_routes }}" }

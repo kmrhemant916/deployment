@@ -11,7 +11,7 @@
   tags:
     - vpc
     - igw
-    - public_subnets
+    - subnets
     - route_table
 
 - name: set VPC ID in variable
@@ -20,14 +20,14 @@
   tags:
     - vpc
     - igw
-    - public_subnets
+    - subnets
     - route_table
 
 - debug: msg="{{ vpc_id }}"
   tags:
     - vpc
     - igw
-    - public_subnets
+    - subnets
     - route_table
 
 - name: create igw for VPC - "{{ vpc_id }}"
@@ -51,20 +51,20 @@
   tags:
     - igw
 
-- name: create public subnet into VPC - {{ vpc_id }}
+- name: create subnet into VPC - {{ vpc_id }}
   ec2_vpc_subnet:
     state: present
     vpc_id: "{{ vpc_id }}"
     region: "{{ outer_item.region }}"
     cidr: "{{ item.cidr }}"
-    map_public: yes
+    map_public: "{{ item.public }}"
     az: "{{ item.az }}"
     resource_tags:
       Name: "{{ item.name }}"
-  with_items: "{{ outer_item.public_subnets }}"
+  with_items: "{{ outer_item.subnets }}"
   register: subnet
   tags:
-    - public_subnets
+    - subnets
 
 - name: Create route table
   ec2_vpc_route_table:
@@ -74,7 +74,7 @@
     routes: "{{ item.routes }}"
     resource_tags:
       Name: "{{ item.name }}"
-  with_items: "{{ outer_item.public_subnets }}"
+  with_items: "{{ outer_item.subnets }}"
   register: route_table
   tags:
     - route_table
