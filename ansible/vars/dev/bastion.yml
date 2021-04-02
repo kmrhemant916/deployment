@@ -1,0 +1,14 @@
+---
+ec2_prefix: bastion
+aws_region: ap-south-1
+security_rules: 
+  inbound: [{ proto: tcp, from_port: 22, to_port: 22, cidr_ip: 0.0.0.0/0 }]
+  outbound: [{ proto: all, cidr_ip: 0.0.0.0/0 }]
+ssh_key_name: aws-admin
+instance_type: t2.micro
+aws_ami: ami-0bcf5425cdc1d8a85
+vpc_subnet_id: subnet-046d4c055b06a1268
+assign_public_ip: yes
+vpc_id: vpc-062efab797ece0283
+instance_count: 1
+inventory_path: inventory/hosts-bastion

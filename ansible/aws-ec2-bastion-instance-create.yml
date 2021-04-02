@@ -1,0 +1,13 @@
+
+# ansible-playbook --inventory-file inventory/hosts-localhost -e target_vpc=dev aws-ec2-bastion-instance-create.yml
+---
+- name: Create bastion EC2 instance in AWS
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - vars/{{ target_vpc }}/bastion.yml
+
+  roles:
+    - { role: aws.ec2-instance-create, tags: [ security_group, ec2 ] }
