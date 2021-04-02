@@ -1,0 +1,13 @@
+# ansible-playbook --inventory-file inventory/hosts-localhost aws-instance-ssh-key-pair-create.yml
+---
+- name: Create a new EC2 key pair
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars:
+    - key_name: aws-admin
+    - region_name: ap-south-1
+
+  roles:
+    - { role: aws.instance-ssh-key-pair-create, tags: [ ssh_key ] }
