@@ -33,6 +33,12 @@
     - ec2
     - security_group
 
+# - debug: 
+#     msg: {{ec2.instances[0].public_ip}}
+#   tags:
+#     - ec2
+
+
 # - name: Add the newly created EC2 instance(s) to the local host group
 #   local_action: lineinfile 
 #                 path={{ inventory_path }}

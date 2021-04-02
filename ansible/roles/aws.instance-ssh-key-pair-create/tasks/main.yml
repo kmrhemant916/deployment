@@ -8,4 +8,4 @@
   register: ec2_key
 
 - name: Save private key locally
-  copy: content="{{ ec2_key.key.private_key }}" dest="~/.ssh/{{ key_name }}.pem" mode=0600
+  copy: content="{{ ec2_key.key.private_key }}" dest="~/.ssh/{{ key_name }}.pem" mode=0400
