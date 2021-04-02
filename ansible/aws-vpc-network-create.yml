@@ -1,8 +1,8 @@
-# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "vpc"
-# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "igw"
+# ansible-playbook --inventory-file inventory/hosts-localhost aws-vpc-network-create.yml --tags "vpc"
+# ansible-playbook --inventory-file inventory/hosts-localhost aws-vpc-network-create.yml --tags "igw"
 # put igw_id in vars/{{ env }}/vpc.yml
-# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "public_subnets"
-# ansible-playbook -i hosts aws-vpc-network-create.yml --tags "route_table"
+# ansible-playbook --inventory-file inventory/hosts-localhost aws-vpc-network-create.yml --tags "public_subnets"
+# ansible-playbook --inventory-file inventory/hosts-localhost aws-vpc-network-create.yml --tags "route_table"
 ---
 - name: Create vpc in aws
   hosts: localhost

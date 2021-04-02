@@ -1,2 +1,1 @@
-1. AWS configured in environment
-2. ansible==2.7.7
+ansible==2.9.10
