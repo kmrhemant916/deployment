@@ -11,3 +11,13 @@
 
   roles:
     - { role: aws.ec2-instance-create, tags: [ security_group, ec2 ] }
+
+# - name: Wait for port 22 to be ready
+#   hosts: managed-hosts
+#   gather_facts: False
+
+#   vars:
+#     - ansible_ssh_host: managed-hosts
+
+#   tasks:
+#     - local_action: wait_for port=22 host="{{ ansible_ssh_host }}" search_regex=OpenSSH delay=60
