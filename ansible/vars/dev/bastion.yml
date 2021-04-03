@@ -11,4 +11,3 @@ vpc_subnet_id: subnet-046d4c055b06a1268
 assign_public_ip: yes
 vpc_id: vpc-062efab797ece0283
 instance_count: 1
-inventory_path: inventory/hosts-bastion
