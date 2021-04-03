@@ -1,0 +1,13 @@
+---
+ec2_prefix: handbook
+aws_region: ap-south-1
+security_rules: 
+  inbound: [{ proto: tcp, from_port: 22, to_port: 22, cidr_ip: 172.31.1.0/24 }, { proto: icmp, from_port: -1, to_port: -1, cidr_ip: 172.31.1.0/24 }]
+  outbound: [{ proto: all, cidr_ip: 0.0.0.0/0 }]
+ssh_key_name: aws-admin
+instance_type: t2.micro
+aws_ami: ami-0bcf5425cdc1d8a85
+vpc_subnet_id: subnet-02927f1047d2c8d57
+assign_public_ip: no
+vpc_id: vpc-062efab797ece0283
+instance_count: 1

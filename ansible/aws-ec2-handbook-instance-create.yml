@@ -1,0 +1,13 @@
+
+# ansible-playbook --inventory-file inventory/hosts-localhost -e target_vpc=dev aws-ec2-handbook-instance-create.yml
+---
+- name: Create handbook EC2 instance in AWS
+  hosts: localhost
+  connection: local
+  gather_facts: False
+
+  vars_files:
+    - vars/{{ target_vpc }}/handbook.yml
+
+  roles:
+    - { role: aws.ec2-instance-create, tags: [ security_group, ec2 ] }

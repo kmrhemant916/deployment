@@ -12,6 +12,7 @@
   register: security_group
   tags:
     - security_group
+    - ec2
 
 - name: Create EC2 instance
   ec2:
@@ -33,7 +34,6 @@
   register: ec2
   tags:
     - ec2
-    - security_group
 
 - debug: msg="{{ ec2 }}"
 
