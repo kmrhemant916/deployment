@@ -1,5 +1,5 @@
 ---
-dev_igw_id: igw-0ba4e4a962b2919a1
+dev_igw_id: igw-0dc27a133748417fc
 dev_public_subnets_routes: [{ dest: "0.0.0.0/0", gateway_id: "{{ dev_igw_id }}" }]
 dev_private_subnets_routes: []
 dev:

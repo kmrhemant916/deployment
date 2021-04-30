@@ -1,13 +1,8 @@
 ---
-ec2_prefix: bastion
 aws_region: ap-south-1
-security_rules: 
-  inbound: [{ proto: tcp, from_port: 22, to_port: 22, cidr_ip: 0.0.0.0/0 }]
-  outbound: [{ proto: all, cidr_ip: 0.0.0.0/0 }]
 ssh_key_name: aws-admin
-instance_type: t2.micro
-aws_ami: ami-0bcf5425cdc1d8a85
-vpc_subnet_id: subnet-046d4c055b06a1268
-assign_public_ip: yes
-vpc_id: vpc-062efab797ece0283
-instance_count: 1
+vpc_subnet_id: subnet-05a8d76868d41d7d4
+vpc_id: vpc-0048df4957e550348
+ec2_instances:
+  - { ec2_prefix: "bastion", instance_type: t2.micro, aws_ami: ami-0bcf5425cdc1d8a85, assign_public_ip: yes, instance_count: 1, inbound_security_rules: [ "{{ hemant_home }}" ], outbound_security_rules: [{ proto: all, cidr_ip: 0.0.0.0/0 }], sg_id: sg-0c66d0da07fc61274 }
+  - { ec2_prefix: "bastion-test", instance_type: t2.micro, aws_ami: ami-0bcf5425cdc1d8a85, assign_public_ip: yes, instance_count: 1, inbound_security_rules: [ "{{ hemant_home }}" ], outbound_security_rules: [{ proto: all, cidr_ip: 0.0.0.0/0 }], sg_id: sg-043ac33cd0bcbd33d }
