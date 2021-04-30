@@ -3,39 +3,45 @@
 
 - name: Create EC2 security group
   ec2_group:
-    name: "{{ ec2_prefix }}-security-group"
-    description: "{{ ec2_prefix }} security group"
+    name: "{{ item.ec2_prefix }}-security-group"
+    description: "{{ item.ec2_prefix }} security group"
     region: "{{ aws_region }}"
-    rules: "{{ security_rules.inbound }}"
+    rules: "{{ item.inbound_security_rules }}"
     vpc_id: "{{ vpc_id }}"
-    rules_egress: "{{ security_rules.outbound }}"
+    rules_egress: "{{ item.outbound_security_rules }}"
+  with_items: "{{ ec2_instances }}"
   register: security_group
   tags:
     - security_group
-    - ec2
+
+- debug: msg="{{ item.group_id }}"
+  with_items: "{{ security_group.results }}"
+  tags:
+    - security_group
 
 - name: Create EC2 instance
   ec2:
     key_name: "{{ ssh_key_name }}"
     region: "{{ aws_region }}"
-    group_id: "{{ security_group.group_id }}"
-    instance_type: "{{ instance_type }}"
-    image: "{{ aws_ami }}"
+    group_id: "{{ item.sg_id }}"
+    instance_type: "{{ item.instance_type }}"
+    image: "{{ item.aws_ami }}"
     wait: yes
     count_tag:
-      Name: "{{ ec2_prefix }}"
+      Name: "{{ item.ec2_prefix }}"
     instance_tags:
-      Name: "{{ ec2_prefix }}"
-    exact_count: "{{ instance_count }}"
+      Name: "{{ item.ec2_prefix }}"
+    exact_count: "{{ item.instance_count }}"
     vpc_subnet_id: "{{ vpc_subnet_id }}"
-    assign_public_ip: "{{ assign_public_ip }}"
-  with_items:
-    - { name: "{{ ec2_prefix }}" }
+    assign_public_ip: "{{ item.assign_public_ip }}"
+  with_items: "{{ ec2_instances }}"
   register: ec2
   tags:
     - ec2
 
 - debug: msg="{{ ec2 }}"
+  tags:
+    - ec2
 
 # Ansible in-memory inventory, check DevOps_Handbook notes
 
