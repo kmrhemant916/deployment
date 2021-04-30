@@ -1,5 +1,7 @@
 
-# ansible-playbook --inventory-file inventory/hosts-localhost -e target_vpc=dev aws-ec2-bastion-instance-create.yml
+# ansible-playbook --inventory-file inventory/hosts-localhost -e target_vpc=dev aws-bastion-target-vpc-instance-create.yml --tags "security_group"
+# put sg_id in vars/{{ target_vpc }}/bastion.yml
+# 
 ---
 - name: Create bastion EC2 instance in AWS
   hosts: localhost
@@ -7,10 +9,12 @@
   gather_facts: False
 
   vars_files:
+    - vars/security_rules.yml
     - vars/{{ target_vpc }}/bastion.yml
 
   roles:
-    - { role: aws.ec2-instance-create, tags: [ security_group, ec2 ] }
+    - { role: aws.ec2-instance-create }
+
 
 # - name: Wait for port 22 to be ready
 #   hosts: managed-hosts
