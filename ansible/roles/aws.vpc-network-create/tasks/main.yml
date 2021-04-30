@@ -66,6 +66,25 @@
   tags:
     - subnets
 
+# Give the output in json format for debugging to fetch the subnet_id
+# - debug: msg="{{ subnet }}"
+#   tags:
+#     - subnets
+
+- debug: msg="{{ item.subnet.id }}"
+  with_items: "{{ subnet.results }}" #results is an array check by uncommenting task line no 69
+  tags:
+    - subnets
+
+# Equivalent to line no 74-77 
+# - debug: msg="{{ subnet.results[0].subnet.id }}"
+#   tags:
+#     - subnets
+
+# - debug: msg="{{ subnet.results[1].subnet.id }}"
+#   tags:
+#     - subnets
+
 - name: Create route table
   ec2_vpc_route_table:
     vpc_id: "{{ vpc_id }}"
@@ -78,3 +97,24 @@
   register: route_table
   tags:
     - route_table
+
+- name: Create NAT Gateway in public subnet
+  ec2_vpc_nat_gateway:
+    state: "present"
+    subnet_id: "{{ subnet_id }}"
+    wait: yes
+    if_exist_do_not_create: true
+    release_eip: true
+  register: nat_gateway
+  tags:
+    - nat_gateway
+
+- name: set NAT GW ID in variable
+  set_fact: 
+    nat_id: "{{ nat_gateway.nat_gateway_id }}"
+  tags:
+    - nat_gateway
+
+- debug: msg="{{ nat_id }}"
+  tags:
+    - nat_gateway

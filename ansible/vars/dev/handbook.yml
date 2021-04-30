@@ -2,7 +2,8 @@
 ec2_prefix: handbook
 aws_region: ap-south-1
 security_rules: 
-  inbound: [{ proto: tcp, from_port: 22, to_port: 22, cidr_ip: 172.31.1.0/24 }, { proto: icmp, from_port: -1, to_port: -1, cidr_ip: 172.31.1.0/24 }]
+  inbound: [{ proto: tcp, from_port: 22, to_port: 22, cidr_ip: 172.31.1.0/24 },
+            { proto: icmp, from_port: -1, to_port: -1, cidr_ip: 172.31.1.0/24 }]
   outbound: [{ proto: all, cidr_ip: 0.0.0.0/0 }]
 ssh_key_name: aws-admin
 instance_type: t2.micro

@@ -25,5 +25,6 @@
       tags:
         - vpc
         - igw
-        - route_table
         - subnets
+        - route_table
+        - nat_gateway

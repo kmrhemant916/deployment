@@ -5,4 +5,4 @@ vpc_subnet_id: subnet-05a8d76868d41d7d4
 vpc_id: vpc-0048df4957e550348
 ec2_instances:
   - { ec2_prefix: "bastion", instance_type: t2.micro, aws_ami: ami-0bcf5425cdc1d8a85, assign_public_ip: yes, instance_count: 1, inbound_security_rules: [ "{{ hemant_home }}" ], outbound_security_rules: [{ proto: all, cidr_ip: 0.0.0.0/0 }], sg_id: sg-0c66d0da07fc61274 }
-  - { ec2_prefix: "bastion-test", instance_type: t2.micro, aws_ami: ami-0bcf5425cdc1d8a85, assign_public_ip: yes, instance_count: 1, inbound_security_rules: [ "{{ hemant_home }}" ], outbound_security_rules: [{ proto: all, cidr_ip: 0.0.0.0/0 }], sg_id: sg-043ac33cd0bcbd33d }
+  # - { ec2_prefix: "bastion-test", instance_type: t2.micro, aws_ami: ami-0bcf5425cdc1d8a85, assign_public_ip: yes, instance_count: 1, inbound_security_rules: [ "{{ hemant_home }}" ], outbound_security_rules: [{ proto: all, cidr_ip: 0.0.0.0/0 }], sg_id: sg-043ac33cd0bcbd33d }

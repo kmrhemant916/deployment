@@ -15,7 +15,6 @@
   roles:
     - { role: aws.ec2-instance-create }
 
-
 # - name: Wait for port 22 to be ready
 #   hosts: managed-hosts
 #   gather_facts: False
